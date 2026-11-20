@@ -1,0 +1,27 @@
+<style>
+.hw-cursor{position:fixed;top:0;left:0;z-index:9999;pointer-events:none;background:#1a1a1a;color:#fff;padding:0.65rem 1.1rem;border-radius:100px;font-size:0.875rem;font-weight:500;transform:translate(-50%,-50%) scale(0);transition:transform 0.25s cubic-bezier(0.16,1,0.3,1),opacity 0.25s ease;white-space:nowrap;opacity:0;font-family:inherit;display:flex;align-items:center;gap:0.35em}
+.hw-cursor.is-visible{transform:translate(-50%,-50%) scale(1);opacity:1}
+.hw-cursor svg{width:0.9em;height:0.9em;flex-shrink:0}
+@media (hover:hover){.card-link-overlay{cursor:none !important}}
+</style>
+<script>
+(function(){
+  if(window.matchMedia&&window.matchMedia('(hover: none)').matches)return;
+  function init(){
+    var c=document.createElement('div');
+    c.className='hw-cursor';
+    c.setAttribute('aria-hidden','true');
+    c.innerHTML='See more <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>';
+    document.body.appendChild(c);
+    var mx=0,my=0,x=0,y=0,raf=null;
+    function tick(){x+=(mx-x)*0.22;y+=(my-y)*0.22;c.style.left=x+'px';c.style.top=y+'px';raf=requestAnimationFrame(tick);}
+    document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;if(!raf)tick();});
+    document.querySelectorAll('.card-link-overlay').forEach(function(el){
+      el.addEventListener('mouseenter',function(){c.classList.add('is-visible');});
+      el.addEventListener('mouseleave',function(){c.classList.remove('is-visible');});
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>

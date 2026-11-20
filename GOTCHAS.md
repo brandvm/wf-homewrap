@@ -26,3 +26,11 @@ collected from client repos into those files.
 ## This project
 
 <!-- Add new entries here, newest first. -->
+### 2026-11-20 · pnpm test fails right after new-project (update-skills check)
+- Area: ci
+- Scope: template-candidate
+- Symptom: `pnpm test` in a fresh client repo: Playwright 20 passed, then `tests/update-skills.check.mjs` fails expecting "What's new since 0.2.0", because `new-project` deletes `CHANGELOG.md`. CI runs `pnpm test`, so the staging deploy is skipped until it passes.
+- Cause: template 1.0.0 test assumes the template repo. A fix exists on the template's unmerged branch `fix/tests-in-client-repos` (local 1.0.1, not on `master`, not tagged).
+- Fix: none here yet. Nothing on the live site loads from staging, so it blocks nothing until the parity release; take the template fix with `pnpm update-skills` once it is released.
+- Status: open
+- Found by: claude

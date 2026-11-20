@@ -1,0 +1,14 @@
+{
+  "prototypeUrl": "http://127.0.0.1:5817",
+  "stagingUrl": "https://homewrap.webflow.io",
+  "liveUrl": "https://www.homewrap.ca",
+  "repoDir": ".",
+  "bundlePattern": "brandvm\\.github\\.io/wf-homewrap/(index\\.js|styles\\.css)",
+  "widths": [
+    [1440, 900],
+    [820, 1180],
+    [667, 375],
+    [390, 844]
+  ],
+  "pages": ["/", "/about", "/services", "/services/kitchen-renovations", "/portfolio", "/portfolio/full-home-renovation-newmarket", "/contact"]
+}

@@ -1,4 +1,4 @@
-# <CLIENT> — Webflow custom code
+# Homewrap — Webflow custom code
 
 Agent instructions for this repository. Codex, Cursor and similar tools read
 this file directly; Claude Code reads it through `CLAUDE.md`. It is the single
@@ -6,16 +6,16 @@ source of agent rules — edit this file, never a copy of it.
 
 ## Project facts
 
-Fill these in when the repo is created from the template (`pnpm new-project`).
+Filled in by `pnpm new-project` on 2026-11-20.
 
-- Client / site: `<CLIENT>`
-- GitHub: `<ORG>/<REPO>`, default branch `master`
-- Webflow site ID: `<SITE_ID>`
-- Webflow MCP server: `webflow-<SLUG>` (`.mcp.json`)
-- Staging site: `https://<SLUG>.webflow.io`
-- Staging bundles: `https://<ORG>.github.io/<REPO>/`
-- Production domain: `<DOMAIN or "not attached yet">`
-- Production release: `<RELEASE in the head snippet, or "none yet">`
+- Client / site: `Homewrap`
+- GitHub: `brandvm/wf-homewrap`, default branch `master`
+- Webflow site ID: `69d94a56e6aede994cf58ad7`
+- Webflow MCP server: `webflow-homewrap` (`.mcp.json`)
+- Staging site: `https://homewrap.webflow.io`
+- Staging bundles: `https://brandvm.github.io/wf-homewrap/`
+- Production domain: `https://www.homewrap.ca` (live before the move to wf-template; see `docs/handoff/ROLLBACK.md`)
+- Production release: `none yet` (custom code still loads from a CodeSandbox preview host; tracker HW-01)
 
 ## Who owns what
 
