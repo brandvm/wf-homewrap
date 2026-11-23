@@ -26,6 +26,15 @@ collected from client repos into those files.
 ## This project
 
 <!-- Add new entries here, newest first. -->
+### 2026-11-23 · The MCP can't edit an HTML Embed's code (or read it)
+- Area: mcp
+- Scope: template-candidate
+- Symptom: `get_all_elements` lists the HtmlEmbed in `G | Embed Code` but returns no code; no tool action writes Embed code. Site and page head/footer code can be read and written (`get_site_freeform_code`, `set_site_freeform_code`).
+- Cause: Webflow Data/Designer API limits.
+- Fix: Embed code is read from the published HTML and changed by a person in the Designer (MANUAL-TODO A). Loader piece 2b goes in the site footer code (before piece 3) instead of a second Embed, so the person edits one line only.
+- Status: open
+- Found by: claude
+
 ### 2026-11-23 · Template module tests fail when a starter module is switched off
 - Area: ci
 - Scope: template-candidate

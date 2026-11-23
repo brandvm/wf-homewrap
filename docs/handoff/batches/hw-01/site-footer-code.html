@@ -1,0 +1,168 @@
+<!-- wf-homewrap loader: piece 2b (stylesheet swap), then piece 3 (bundle). Lenis and homewrap-main.js are in the bundle. -->
+<script>
+  (function () {
+    var C = window.WFC;
+    var base = document.getElementById("wfc-css");
+    if (!C) return console.error("[wfc] Head code config missing; the stylesheet stays on staging.");
+    if (!base) return;
+    // Swap stylesheets without an unstyled gap. The staging sheet from 2a
+    // is already loading (or applied) when this runs, so the swap is NOT
+    // settled before first paint. Assigning a new href to a <link> drops
+    // its rules until the new file arrives; this sheet scales the type
+    // (§01), so pages re-rendered at the wrong scale and jumped — a
+    // full-page layout shift, measured at CLS 0.2–0.5 on desktop. Instead
+    // the target loads next to the current sheet; the old one goes only
+    // once the new one has loaded, and stays if the new one fails. The id
+    // moves at once, so later lookups (piece 3) find the target. Same
+    // URL = no-op.
+    C.setCSS = function (href) {
+      var cur = document.getElementById("wfc-css");
+      if (!cur) return;
+      var url = new URL(href, location.href).href;
+      if (cur.href === url) return;
+      var next = document.createElement("link");
+      next.rel = "stylesheet";
+      next.href = url;
+      cur.removeAttribute("id");
+      next.id = "wfc-css";
+      next.onload = function () { if (cur.parentNode) cur.parentNode.removeChild(cur); };
+      // On error, give the id back only if no newer swap has taken it
+      // (a second setCSS call while this one was still loading).
+      next.onerror = function () {
+        if (next.parentNode) next.parentNode.removeChild(next);
+        if (!document.getElementById("wfc-css")) cur.id = "wfc-css";
+      };
+      cur.parentNode.insertBefore(next, cur.nextSibling);
+    };
+    if (!C.staging && C.prod !== C.stag) C.setCSS(C.prod + "styles.css");
+    else
+      // Staging (webflow.io, or a domain before the first release): keep the
+      // sheet from 2a. Swapping before first paint fetched it a second time,
+      // render-blocking, and shifted the layout when it arrived. GitHub
+      // Pages caches ~10 min, so a cache-busted copy follows after `load`,
+      // unless a fallback has taken the bundle elsewhere.
+      window.addEventListener("load", function () {
+        if (C.source === C.stag) C.setCSS(C.stag + "styles.css?v=" + Date.now());
+      });
+  })();
+</script>
+<script>
+  (function () {
+    var C = window.WFC;
+    if (!C) return console.error("[wfc] Head code config missing; custom code not loaded.");
+    if (!document.getElementById("wfc-css"))
+      console.warn("[wfc] CSS embed not found on this page; styles are missing.");
+    function js(src, fallback) {
+      // Set before execution: the base the bundle actually loads from,
+      // including the staging -> pinned release fallback.
+      C.source = new URL(".", src).href;
+      var baseCSS = document.getElementById("wfc-css");
+      var cssURL = C.source + "styles.css" + new URL(src).search;
+      // Re-point the sheet only when it comes from somewhere else (a
+      // fallback), so CSS and JS match: staging keeps the sheet 2b left.
+      // setCSS (piece 2b) swaps without an unstyled gap; fall back to a
+      // plain href if 2b is an older copy.
+      if (baseCSS && baseCSS.href.indexOf(C.source) === 0) { /* already there */ }
+      else if (C.setCSS) C.setCSS(cssURL);
+      else if (baseCSS) baseCSS.href = cssURL;
+      var s = document.createElement("script");
+      s.src = src;
+      if (fallback) s.onerror = fallback;
+      document.head.appendChild(s);
+    }
+    var v = "?v=" + Date.now();
+    if (C.staging)
+      js(C.stag + "index.js" + v, C.release ? function () {
+        js(C.prod + "index.js");
+      } : null);
+    else js(C.prod + "index.js" + (C.release ? "" : v));
+  })();
+</script>
+
+<!-- Homewrap: populate campaign fields in every enquiry form -->
+<script>
+(function () {
+  var keys = ['utm_id', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+  var params = new URLSearchParams(window.location.search);
+  function populateCampaignFields() {
+    keys.forEach(function (key) {
+      var value = params.get(key);
+      try {
+        if (value) sessionStorage.setItem(key, value);
+        value = sessionStorage.getItem(key) || value;
+      } catch (error) { /* Keep forms usable when storage is unavailable. */ }
+      if (!value) return;
+      document.querySelectorAll('form input[type="hidden"][name="' + key + '"]').forEach(function (field) {
+        field.value = value;
+      });
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', populateCampaignFields);
+  } else {
+    populateCampaignFields();
+  }
+  document.addEventListener('submit', populateCampaignFields, true);
+})();
+</script>
+
+<!-- Homewrap first-touch form attribution -->
+<script>
+(function () {
+  'use strict';
+  var storageKey = 'homewrap_attribution_v1';
+  function clean(value) { return String(value || '').replace(/[^a-zA-Z0-9._ -]/g, '').slice(0, 100); }
+  function isDomain(host, domain) { return host === domain || host.slice(-(domain.length + 1)) === '.' + domain; }
+  function classify(url, referrer) {
+    var source = clean(url.searchParams.get('utm_source')).toLowerCase();
+    var medium = clean(url.searchParams.get('utm_medium')).toLowerCase();
+    var campaign = clean(url.searchParams.get('utm_campaign'));
+    var host = '';
+    try { host = new URL(referrer).hostname.toLowerCase(); } catch (error) {}
+    if (host === url.hostname || (isDomain(host, 'homewrap.ca') && isDomain(url.hostname, 'homewrap.ca'))) host = '';
+    var value = source || host;
+    var ai = [['chatgpt.com', 'ChatGPT'], ['chat.openai.com', 'ChatGPT'], ['perplexity.ai', 'Perplexity'], ['claude.ai', 'Claude'], ['gemini.google.com', 'Gemini'], ['copilot.microsoft.com', 'Microsoft Copilot'], ['grok.com', 'Grok']];
+    var label = '';
+    var channel = '';
+    if (source === 'google' && /^(google_business_profile|gbp|gmb)$/i.test(campaign)) {
+      label = 'Google Business Profile'; channel = medium || 'organic';
+    }
+    if (!label) ai.some(function (entry) {
+      if (isDomain(value, entry[0]) || value === entry[1].toLowerCase()) { label = entry[1]; channel = medium || 'AI referral'; return true; }
+      return false;
+    });
+    if (!label && (value === 'google' || /(^|\.)google\.[a-z.]+$/.test(value))) { label = 'Google'; channel = medium || 'organic'; }
+    if (!label && (value === 'bing' || isDomain(value, 'bing.com'))) { label = 'Bing'; channel = medium || 'organic'; }
+    if (!label && (value === 'duckduckgo' || isDomain(value, 'duckduckgo.com'))) { label = 'DuckDuckGo'; channel = medium || 'organic'; }
+    if (!label && (value === 'yahoo' || isDomain(value, 'search.yahoo.com'))) { label = 'Yahoo'; channel = medium || 'organic'; }
+    var social = [['facebook.com', 'Facebook'], ['instagram.com', 'Instagram'], ['linkedin.com', 'LinkedIn'], ['t.co', 'X'], ['x.com', 'X'], ['pinterest.com', 'Pinterest'], ['youtube.com', 'YouTube']];
+    if (!label) social.some(function (entry) {
+      if (isDomain(value, entry[0]) || value === entry[1].toLowerCase()) { label = entry[1]; channel = medium || 'social'; return true; }
+      return false;
+    });
+    if (!label && source) { label = source; channel = medium || 'tagged'; }
+    if (!label && host) { label = host; channel = 'referral'; }
+    return { source: label || 'Direct / unknown', medium: channel || 'unknown', campaign: campaign, landing: url.pathname, referrer: host };
+  }
+  var current = classify(new URL(window.location.href), document.referrer);
+  var first = current;
+  try {
+    var saved = JSON.parse(sessionStorage.getItem(storageKey) || 'null');
+    if (saved && ['source', 'medium', 'campaign', 'landing', 'referrer'].every(function (key) { return typeof saved[key] === 'string'; })) first = saved;
+    else sessionStorage.setItem(storageKey, JSON.stringify(current));
+  } catch (error) { /* Attribution must never block a form. */ }
+  function populate() {
+    var fields = [['lead_source', 'Lead source', first.source], ['lead_medium', 'Lead medium', first.medium], ['lead_campaign', 'Lead campaign', first.campaign], ['first_landing_page', 'First landing page', first.landing], ['referring_domain', 'Referring domain', first.referrer]];
+    document.querySelectorAll('form').forEach(function (form) {
+      fields.forEach(function (entry) {
+        var input = form.querySelector('input[name="' + entry[0] + '"]');
+        if (!input) { input = document.createElement('input'); input.type = 'hidden'; input.name = entry[0]; input.setAttribute('data-name', entry[1]); form.appendChild(input); }
+        input.value = entry[2];
+      });
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', populate);
+  else populate();
+  document.addEventListener('submit', populate, true);
+})();
+</script>

@@ -1,0 +1,206 @@
+<!-- wf-homewrap loader: head code (piece 1), RELEASE pinned. See loader.html in brandvm/wf-homewrap. -->
+<script>
+  (function () {
+    var RELEASE = "1.0.0"; // the release tag, e.g. "1.0.0" — the only version string
+    var OWNER = "brandvm"; // the GitHub org or user that owns this repo
+    var SITE = "wf-homewrap"; // this repo's name
+    var STAG = "https://" + OWNER + ".github.io/" + SITE + "/";
+    // *.canvas.webflow.com is the Designer's custom-code preview: it runs
+    // the staging bundle like webflow.io.
+    var staging = /\.webflow\.io$|\.canvas\.webflow\.com$/.test(location.hostname);
+    var prod = RELEASE
+      ? "https://cdn.jsdelivr.net/gh/" + OWNER + "/" + SITE + "@" + RELEASE + "/dist/"
+      : STAG;
+    if (!staging && !RELEASE)
+      console.error("[wfc] RELEASE is not set in head code; serving the staging bundle. Tag a release and set RELEASE before launch.");
+    // Warm the connection to wherever the bundle comes from (GitHub Pages
+    // on staging, jsDelivr with a RELEASE). A fixed
+    // jsDelivr preconnect went unused on staging and before the first
+    // release. Two links on purpose: the stylesheet and its font fetches
+    // are CORS-different and open separate connections.
+    var origin = new URL(staging ? STAG : prod).origin;
+    [false, true].forEach(function (cors) {
+      var warm = document.createElement("link");
+      warm.rel = "preconnect";
+      warm.href = origin;
+      if (cors) warm.crossOrigin = "";
+      document.head.appendChild(warm);
+    });
+    // The canvas Embed (2a) must link the staging stylesheet, for the
+    // Designer. On a release domain, write the pinned sheet into <head>
+    // instead: a parser-inserted head stylesheet holds first paint in every
+    // browser, so the page never paints at the wrong scale (§01). Then
+    // re-point 2a at the same file as the parser inserts it (one request;
+    // the observer runs before 2b), so GitHub Pages never holds the page and
+    // 2b's swap is a no-op. If the observer misses, 2b swaps as before.
+    // document.write is deliberate (Lighthouse flags it): only a
+    // parser-inserted sheet holds first paint, and it writes a stylesheet,
+    // never a script, so Chrome's document.write intervention doesn't apply.
+    // If the release sheet fails (jsDelivr down or blocked), 2a goes back to
+    // its staging sheet so the page stays styled, as it did before 0.8.0.
+    var releaseCSSFailed;
+    if (!staging && RELEASE) {
+      var want = prod + "styles.css";
+      var embed, embedHref, failed = false;
+      releaseCSSFailed = function () {
+        failed = true;
+        if (embed && embed.href === want) embed.href = embedHref;
+      };
+      document.write('<link rel="stylesheet" href="' + want + '" onerror="WFC.releaseCSSFailed()">');
+      if (window.MutationObserver) {
+        var watch = new MutationObserver(function () {
+          var link = document.getElementById("wfc-css");
+          if (!link) return;
+          watch.disconnect();
+          embed = link;
+          embedHref = link.href;
+          if (!failed && link.href !== want) link.href = want;
+        });
+        watch.observe(document.documentElement, { childList: true, subtree: true });
+        document.addEventListener("DOMContentLoaded", function () { watch.disconnect(); });
+      }
+    }
+    // Shared config — the Embed, the footer loader and the bundle read this.
+    window.WFC = {
+      staging: staging, stag: STAG,
+      release: RELEASE, prod: prod, releaseCSSFailed: releaseCSSFailed,
+    };
+
+    // Paired with the html.is-loading rules in src/styles.css. The bundle
+    // removes this when it boots; the timeout is the safety net so a 404
+    // on the bundle never leaves a permanently scroll-locked page. A plain
+    // timeout, not one started on `load` — a slow image would otherwise
+    // keep the page locked far past 3 s.
+    var root = document.documentElement;
+    root.classList.add("is-loading");
+    setTimeout(function () { root.classList.remove("is-loading"); }, 3000);
+  })();
+</script>
+
+<!-- Global | Webflow Head Custom Code | Start -->
+
+<!-- Disables Zoom on Input Fields -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+<!-- Theme Color Browser -->
+<meta name="theme-color" content="#ffffff" />
+
+<!-- Finsweet Attributes -->
+
+<!-- Preloading Fonts -->
+<link rel="preload" href="https://cdn.prod.website-files.com/69d6881d0180abb3f22d0133/69d6885e1138d2ea4d0a429c_PublicSans-VariableFont_wght.ttf" as="font" type="font/tff" crossorigin>
+
+<!-- Ahrefs Authenticator(s) -->
+<script src="https://analytics.ahrefs.com/analytics.js" data-key="0qPRiJGsttelYcVET+gwnQ" async></script>
+
+<style>
+  /* Hiding Dev Supports */
+  .g-embed-code,
+  /* .g-grid-guide, */
+  .w-webflow-badge {
+    z-index: -99999 !important;
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
+  /* --------- Lenis Smooth Scrolling --------- */
+  html.lenis {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+</style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "GeneralContractor",
+  "@id": "https://www.homewrap.ca/#business",
+  "name": "Homewrap Construction",
+  "alternateName": "Homewrap",
+  "description": "Design-build general contractor in Toronto and the GTA. Full home renovations, additions, garden suites, basement underpinning, kitchen and bathroom renovations, and custom home building. Engineering-backed team with in-house design and permits.",
+  "url": "https://www.homewrap.ca",
+  "telephone": "+1-416-749-0999",
+  "email": "info@homewrap.ca",
+  "logo": "https://cdn.prod.website-files.com/69d94a56e6aede994cf58ad7/69d94b3f3c94ecbe3b9aab80_Favicon.svg",
+  "image": "https://cdn.prod.website-files.com/69d94a56e6aede994cf58ad7/69e7e16fbf1e287e292de33e_Homewrap%20Hero.png",
+  "priceRange": "$$$",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "333 Denison St, Unit 3",
+    "addressLocality": "Markham",
+    "addressRegion": "ON",
+    "postalCode": "L3R 2Z4",
+    "addressCountry": "CA"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 43.8217597,
+    "longitude": -79.3482302
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "09:00",
+      "closes": "18:00"
+    }
+  ],
+  "areaServed": [
+    { "@type": "City", "name": "Toronto" },
+    { "@type": "City", "name": "North York" },
+    { "@type": "City", "name": "Scarborough" },
+    { "@type": "City", "name": "Etobicoke" },
+    { "@type": "City", "name": "Vaughan" },
+    { "@type": "City", "name": "Richmond Hill" },
+    { "@type": "City", "name": "Markham" },
+    { "@type": "City", "name": "Aurora" },
+    { "@type": "City", "name": "Newmarket" },
+    { "@type": "City", "name": "Mississauga" },
+    { "@type": "City", "name": "Brampton" },
+    { "@type": "City", "name": "Oakville" },
+    { "@type": "City", "name": "Burlington" },
+    { "@type": "City", "name": "Milton" },
+    { "@type": "City", "name": "Ajax" },
+    { "@type": "City", "name": "Pickering" },
+    { "@type": "City", "name": "Whitby" },
+    { "@type": "City", "name": "Oshawa" }
+  ],
+  "hasCredential": [
+    {
+      "@type": "EducationalOccupationalCredential",
+      "credentialCategory": "license",
+      "name": "HCRA Licensed New Home Builder",
+      "recognizedBy": { "@type": "Organization", "name": "Home Construction Regulatory Authority (HCRA)" }
+    },
+    {
+      "@type": "EducationalOccupationalCredential",
+      "credentialCategory": "certification",
+      "name": "Tarion New Home Warranty",
+      "recognizedBy": { "@type": "Organization", "name": "Tarion" }
+    }
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "5.0",
+    "reviewCount": "26",
+    "bestRating": "5",
+    "worstRating": "1"
+  },
+  "sameAs": [
+    "https://www.instagram.com/homewrap.ca",
+    "https://www.facebook.com/homewrap.ca",
+    "https://maps.app.goo.gl/zdmFW5Qpm4yJ6ftj7"
+  ]
+}
+</script>
+
+<!-- Global | Webflow Head Custom Code | End -->

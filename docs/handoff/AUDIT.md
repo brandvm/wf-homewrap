@@ -97,10 +97,22 @@ live again.
   0.00 % of pixels (one 7–13 px row band of a moving element on Home at 667
   and 390, inside the live-vs-live noise), page heights identical.
 - Lenis active (`html.lenis`) and Swiper loaded on every page that had them.
+- Run again 23 Nov with piece 2b in the site footer code instead of a
+  second Embed (the batch as planned, `batches/hw-01/`): 0 of 28 changed,
+  no page errors, no requests to the sandbox or unpkg.
 - No page errors. Requests to the sandbox or unpkg from the rewritten pages: 0.
-- The 20 Nov baselines are out of date: the live site changed since
-  (`/contact` 1440 is 17 px shorter, 6 % of pixels). Someone has published
-  since 20 Nov. Re-save the baselines right before the batch.
+- `/contact` at 1440 varies between loads on its own: 2479 px on 20 Nov,
+  2462 px in the morning of 23 Nov, 2479 px again later that day, with no
+  publish in between (the API: live domain last published 26 Oct 2026). Its
+  noise floor across time is not 0: up to 17 px of height and ~6 % of
+  pixels. Compare it within one run (live, change, live), not against an
+  old baseline alone.
+- Publish state (API, 23 Nov): staging (homewrap.webflow.io) last published
+  17 Oct 2026, live domains 26 Oct 2026, Designer last changed 19 Nov 2026.
+  So there are unpublished Designer changes, and a publish of either target
+  sends them.
+- Baselines re-saved 23 Nov for live and staging (`.webflow-build/baselines-live`,
+  `baselines-staging`); two untouched runs each: 0.0 % on all pairs.
 
 ## Findings, sorted
 

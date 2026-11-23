@@ -56,4 +56,4 @@ again at each gate, so the steps are found early and not at the end:
 
 | ID | Where (page › element or class) | Breakpoint | Set | Why the API can't | Done |
 | --- | --- | --- | --- | --- | --- |
-| A | | Desktop | | | ☐ |
+| A | Component **G \| Embed Code** › its HTML Embed (on every page) | — | Replace the one line `<link rel="stylesheet" type="text/css" href="https://8n3dq9.csb.app/Homewrap/homewrap-main.css" />` with the 2a link (`id="wfc-css"`, `https://brandvm.github.io/wf-homewrap/styles.css?v=1`); leave everything else. Full result: `batches/hw-01/g-embed-code.html`. Batch HW-01, only after the go-ahead. | The API has no action that writes an Embed's code | ☐ |
