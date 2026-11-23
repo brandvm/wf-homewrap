@@ -15,7 +15,7 @@ Filled in by `pnpm new-project` on 2026-11-20.
 - Staging site: `https://homewrap.webflow.io`
 - Staging bundles: `https://brandvm.github.io/wf-homewrap/`
 - Production domain: `https://www.homewrap.ca` (live before the move to wf-template; see `docs/handoff/ROLLBACK.md`)
-- Production release: `none yet` (custom code still loads from a CodeSandbox preview host; tracker HW-01)
+- Production release: `none installed`. `v1.0.0` (HW-01 parity release) is tagged and on jsDelivr, not yet in the head code; the site still loads its code from a CodeSandbox preview host (tracker HW-01)
 
 ## Who owns what
 
