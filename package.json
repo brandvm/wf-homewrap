@@ -39,5 +39,8 @@
     "esbuild": "^0.28.2",
     "subset-font": "2.9.0",
     "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "lenis": "1.1.5"
   }
 }

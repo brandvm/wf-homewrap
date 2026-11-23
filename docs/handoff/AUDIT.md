@@ -82,6 +82,26 @@ Permits, About Gallery. The sitemap lists 24 URLs (5 static, 8 services,
 11 portfolio). Utility pages (404, password) are not readable through the
 API. Full list: `rollback/designer-code-2026-11-20.md`.
 
+## HW-01 parity simulation, 2026-11-23 (*measured*, no Webflow writes)
+
+The planned batch was simulated on the live pages: each www.homewrap.ca
+document was rewritten in the browser the way the batch would change the
+custom code (loader head code with `RELEASE = "1.0.0"`, Embeds 2a/2b in
+place of the sandbox `<link>`, the footer loader in place of the unpkg
+Lenis tag, the Lenis start-up and the sandbox script), the bundle was
+served from this repo's `dist/`, and `8n3dq9.csb.app` and `unpkg.com` were
+blocked. Each page × width was shot three times in a row: live, rewritten,
+live again.
+
+- 7 pages × 4 widths: **0 changed**. Live vs live and live vs rewritten both
+  0.00 % of pixels (one 7–13 px row band of a moving element on Home at 667
+  and 390, inside the live-vs-live noise), page heights identical.
+- Lenis active (`html.lenis`) and Swiper loaded on every page that had them.
+- No page errors. Requests to the sandbox or unpkg from the rewritten pages: 0.
+- The 20 Nov baselines are out of date: the live site changed since
+  (`/contact` 1440 is 17 px shorter, 6 % of pixels). Someone has published
+  since 20 Nov. Re-save the baselines right before the batch.
+
 ## Findings, sorted
 
 1. **The site depends on a CodeSandbox preview host** for its main script

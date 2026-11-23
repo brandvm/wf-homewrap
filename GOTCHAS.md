@@ -26,11 +26,20 @@ collected from client repos into those files.
 ## This project
 
 <!-- Add new entries here, newest first. -->
+### 2026-11-23 · Template module tests fail when a starter module is switched off
+- Area: ci
+- Scope: template-candidate
+- Symptom: `tests/modules.spec.mjs` failed 3 tests (aria-roles, placeholders, unique-form-ids) after the HW-01 parity release took the starter modules out of `src/index.ts`.
+- Cause: the tests assume every starter module is in the bundle. A live site moved onto the template (webflow-audit › parity release) must not run code it didn't run before; `unique-form-ids` would rename the duplicate field ids of the two forms on /contact.
+- Fix: each of those tests is skipped when `src/index.ts` has no `run('<name>'` for it. The template could do the same.
+- Status: open
+- Found by: claude
+
 ### 2026-11-20 · pnpm test fails right after new-project (update-skills check)
 - Area: ci
 - Scope: template-candidate
 - Symptom: `pnpm test` in a fresh client repo: Playwright 20 passed, then `tests/update-skills.check.mjs` fails expecting "What's new since 0.2.0", because `new-project` deletes `CHANGELOG.md`. CI runs `pnpm test`, so the staging deploy is skipped until it passes.
 - Cause: template 1.0.0 test assumes the template repo. A fix exists on the template's unmerged branch `fix/tests-in-client-repos` (local 1.0.1, not on `master`, not tagged).
 - Fix: none here yet. Nothing on the live site loads from staging, so it blocks nothing until the parity release; take the template fix with `pnpm update-skills` once it is released.
-- Status: open
+- Status: fixed ac199d3 (tests copied from wf-template v1.0.1)
 - Found by: claude

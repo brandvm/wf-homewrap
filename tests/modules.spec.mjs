@@ -7,6 +7,11 @@ import * as esbuild from 'esbuild';
 // publishes it. Recipes are not in the bundle: they are compiled here the
 // way a project's build would compile them once copied into src/modules/.
 const js = readFileSync(new URL('../dist/index.js', import.meta.url), 'utf8');
+// A starter module this repo's src/index.ts doesn't run (HW-01 parity
+// release: Homewrap ships only the code the live site already ran) has
+// nothing to test in the bundle: its test is skipped, not failed.
+const manifest = readFileSync(new URL('../src/index.ts', import.meta.url), 'utf8');
+const runs = (name) => manifest.includes(`run('${name}'`);
 
 async function recipe(dir, code) {
   const result = await esbuild.build({
@@ -32,6 +37,7 @@ async function setup(page, body, { script = js, init } = {}) {
 }
 
 test('data-aria-role replaces the role Webflow publishes', async ({ page }) => {
+  test.skip(!runs('aria-roles'), 'starter module not in src/index.ts');
   const errors = await setup(page, `<div class="w-dyn-list"><div role="list" class="w-dyn-items" data-aria-role="rowgroup">
     <div role="listitem" class="w-dyn-item" data-aria-role="row">One</div>
     <div role="listitem" class="w-dyn-item" data-aria-role=" ">Two</div></div></div>`);
@@ -43,6 +49,7 @@ test('data-aria-role replaces the role Webflow publishes', async ({ page }) => {
 });
 
 test('data-placeholder becomes the field placeholder', async ({ page }) => {
+  test.skip(!runs('placeholders'), 'starter module not in src/index.ts');
   const errors = await setup(page, `<input id="name" placeholder="Designer" data-placeholder="Your name">
     <textarea id="message" data-placeholder="Tell us more"></textarea>
     <input id="empty" placeholder="Designer" data-placeholder="">`);
@@ -60,6 +67,7 @@ const radio = (label, checked = '') => `<div class="w-dyn-item"><label class="w-
   <span class="w-form-label" for="radio">${label}</span></label></div>`;
 
 test('duplicate CMS radio ids become unique and labels follow', async ({ page }) => {
+  test.skip(!runs('unique-form-ids'), 'starter module not in src/index.ts');
   const errors = await setup(page, `<form>${radio('All', 'checked')}${radio('Experiential')}${radio('Media Relations')}${radio('All')}</form>
     <input id="solo" type="text"><label for="solo">Solo</label>`);
   const ids = await page.$$eval('input[type=radio]', (els) => els.map((e) => e.id));
