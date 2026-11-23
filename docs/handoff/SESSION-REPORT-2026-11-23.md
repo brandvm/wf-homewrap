@@ -1,10 +1,9 @@
 # Session report: 2026-11-23
 
-The Claude Code sessions listed below were archived on 2026-11-23 to keep the Claude app responsive. This file records where each one left off, so a new session can pick up the work.
+The Claude Code sessions listed below were archived and then deleted on 2026-11-23 to keep the Claude app responsive. This file records where each one left off, so a new session can pick up the work.
 
 Read this with `HANDOFF.md` (the project brief and its Status section). If something here conflicts with `HANDOFF.md`, `HANDOFF.md` and the git history are more current.
 
-To reopen a session, go to the Claude app's sidebar → Archived, or use the session link while the app is installed.
 
 ## Open items
 
@@ -26,7 +25,7 @@ Latest commits on the default branch:
 ### Homewrap: set up on wf-template
 
 - **Active:** 2026-11-20 → 2026-11-23 11:34
-- **Session:** [local_bdc1a4b2-e4cc-42ff-aa12-3ad8e620626d](claude://claude.ai/epitaxy/local_bdc1a4b2-e4cc-42ff-aa12-3ad8e620626d) (archived)
+- **Session:** `local_bdc1a4b2-e4cc-42ff-aa12-3ad8e620626d` (deleted 2026-11-23)
 - **Started with:** "Another Claude session sent a message: <cross-session-message from="local_63d734be-a5b4-428c-b937-21a62dc9c2d3" from-name="Harvest client lessons, then audit 8 client sites"> Go-ahead from the user ("can you tell them?", after the next-step list): push master and the rollback-2026-11-20 tag to brand…"
 - **Where it ended:** Step 4 is done, all read-only: the stylesheet Embed is in component G | Embed Code, baselines are re-saved, and the exact batch is in wf-homewrap/docs/handoff/batches/hw-01 (commit 80dedad).
 - **Recent progress:**
